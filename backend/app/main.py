@@ -1,9 +1,17 @@
 from fastapi import FastAPI, UploadFile, File
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.pipeline import analyze_frame
+from app.auth.routes import router as auth_router
+from app.database.db import Base, engine
 
 # Create FastAPI app
 app = FastAPI(title="AI Proctoring System")
+
+# Create DB tables
+Base.metadata.create_all(bind=engine)
+
+# Include routes
+app.include_router(auth_router, prefix="/auth")
 
 app.add_middleware(
     CORSMiddleware,
